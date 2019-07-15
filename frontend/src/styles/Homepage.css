@@ -1,0 +1,49 @@
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  
+  .home-input {
+    display: block;
+    margin: 10px auto 0px auto;
+    text-align: center;
+    font-size: 20px;
+    padding-left: 10px;
+    height: 35px;
+    width: 300px;
+    border-radius: 4px;
+    border: solid 1px rgb(192, 192, 192);
+    box-shadow: 0px 4px 8px #e4e4e4;
+    transition-duration: .2s;
+  }
+  
+  .home-input:focus {
+    box-shadow: 0px 12px 8px #e4e4e4;
+    outline: none;
+  }
+  
+  .home-button {
+    margin: 15px auto 0px auto;
+    padding: 10px 20px;
+    width: 150px;
+    font-size: 20px;
+    background: none;
+    border-radius: 4px;
+    border: solid 1px rgb(192, 192, 192);
+    box-shadow: 0px 4px 8px #e4e4e4;
+    transition-duration: .2s;
+    display: block;
+    text-decoration: none;
+    background-color: rgb(80, 170, 255);
+    color: white;
+    text-align: center;
+  }
+  
+  .home-button:hover {
+    cursor: pointer;
+  }
+  
+  .home-button:focus {
+    outline: none;
+  }
