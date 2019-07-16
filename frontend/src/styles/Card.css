@@ -1,0 +1,15 @@
+.card {
+    border-radius: 8px; }
+
+  
+.style_light {
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.13);
+    background: rgba(38, 51, 67, 0.6);
+    color: white; }
+  
+  .style_dark {
+    background: transparent;
+    color: white; }
+  
+  .style_blackOnWhite {
+    color: #23272a; }
