@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import "../styles/header.css";
+import styled from 'styled-components';
 import React, { Component } from "react";
+
+// Add spacing in between navbar and content
+const ShiftDown = styled.div`margin-bottom: 10vw;`;
 
 class Header extends Component {
   state = {
@@ -27,30 +31,38 @@ class Header extends Component {
  
   render() {
     return (
-      <div className="header">
-        <div className="logo">
-          <Link to="/" className="logo-link">
-            <img
-              className="logo-diamond"
-              src="https://vignette.wikia.nocookie.net/spartaremix/images/e/ec/Discord-new-logo.png/revision/latest?cb=20180224071554"
-            />
-            <h1 className="logo-name">DiscordCrawler</h1>
-          </Link>
-          <div className="status">
-            <div
-              className={
-                this.state.status == "Online" ? "status-green" : "status-red"
-              }
-            />{" "}
-            {this.state.status}
+      <div>
+
+    
+      <ShiftDown>
+        <div className="header">
+          <div className="stretcher">
+          <div className="navitem logo">
+            <Link to="/" className="navitem logo-link">
+              <img
+                className="navitem logo-diamond"
+                src="https://vignette.wikia.nocookie.net/spartaremix/images/e/ec/Discord-new-logo.png/revision/latest?cb=20180224071554"
+              />
+              <h1 className="navitem logo-name">DiscordCrawler</h1>
+            </Link>
+            <div className="navitem status">
+              <div
+                className={
+                  this.state.status == "Online" ? "status-green" : "status-red"
+                }
+              />{" "}
+              {this.state.status}
+            </div>
           </div>
-        </div>
-        <div className={this.state.menuClass}>
-          <Link to="/">Home</Link>
-          <Link to="/stats">Stats</Link>
-          <Link to="/about">About</Link>
-        </div>
-        <i className="fa fa-bars icon" onClick={this.dropdown} />
+          <div className={this.state.menuClass}>
+          <div className = "navitem">
+            <Link to="/">Home</Link>
+            <Link to="/stats">Stats</Link>
+            <Link to="/about">About</Link>
+          </div></div>
+          <i className="navitem fa fa-bars icon" onClick={this.dropdown} />
+        </div></div>
+      </ShiftDown>
       </div>
     );
   }
