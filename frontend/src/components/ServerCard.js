@@ -1,104 +1,98 @@
-import React, { Component } from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import './ServerCard.css';
+import '../styles/ServerCard.css';
+import Zoom from 'react-reveal/Zoom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
-var DynamicAvatar, DynamicBackground = [ null, null ];
+const Animation = styled.div.attrs(props => ({
+  style: { animationDelay: `${props.delay}s` } }))`
+  opacity: 0;animation:fadeIn ease-in 1 forwards;animation-fill-mode:
+  forwards;animation-duration:1s;`;
 
-class ServerCard extends Component {
+const CardBackground = styled.div.attrs(props => ({
+  style: { background: 'url(' + `${props.bgImage}%` + ')' }
+}))``;
 
-    constructor(props) {
-      super(props);
-      this.state = {width: props.width,  bgimage: '#',
-      avatar: '#',
-      title: 'Loading..',
-      subtitle: '[unused]',
-      online: '0',
-      total: '0'};      
-    }
+const CardAvatar = styled.div.attrs(props => ({
+  style: { background: 'url(' + `${props.avatar}%` + ')' }
+}))``;
 
-    componentWillMount()
-    {
-      // we are no longer using dangerouslySetHTML because it was affecting all components 
-      // also we need to collect the viewport width for a responsive feature
+const CardJoin = styled.div`    float: right;
+margin-top: 4em;
+margin-right: 1em;
+position: relative;`;
 
-      this.setState({width: window.innerWidth });
 
-      if (this.props && this.props.avatar)
-       {
-          DynamicAvatar = styled.div`   
-            display: inline-block;
-            border-radius: 45px;
-            position: relative;
-            height: 100%; 
-            background: #141414;
-            border: 1px solid #ffffff9e;
-            background-repeat: no-repeat;
-            background-size: 190%;
-            background-position: center;
-            top: 3rem;
-            left: 1.8rem;
-            overflow: hidden;
-            -webkit-box-shadow: -10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0); 
-            box-shadow: -10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
-            background-image: url(${this.props.avatar});` 
-       }
-    if (this.props && this.props.bgimage)
-    {
-        DynamicBackground = styled.div`
-            background-position: 50% 50%;
-            background-size: 120%;
-            background-repeat: no-repeat;
-            filter: blur(60px) brightness(0.8) opacity(0.6);
-            will-change: transform;
-            -webkit-backface-visibility: hidden;
-            -webkit-transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            transform: translate3d(0, 0, 0);
-            width: 100%;
-            height: 150px;
-            background-color: #263343;
-            position:absolute;
-            background-image:url(${this.props.bgimage});            
-            `;  
+function ServerCard (props) {
+  const [cardData, setCardData] = useState(props.data);
+  const [cardNumber, setCardNumber] = useState(props.cardNumber);
+  const [inviteCode, setInviteCode] = useState(props.code);
+
+  function getIconURL (size = 128) {
+    if (cardData && cardData.guild) {
+      var guildID = cardData.guild.id;
+      var iconID = cardData.guild.icon;
+      if (iconID === 'undefined.png') {
+        return null;
       }
+      return (
+        'https://cdn.discordapp.com/icons/' +
+        guildID +
+        '/' +
+        iconID +
+        '.png?size=' +
+        size
+      );
     }
-    
-    
-    // called each time a parent renders this component to a client DOM
-    render() {
-        return (
-        <div>
-        
-          <div className="user__card">
-            <DynamicBackground />   
-            <DynamicAvatar>
-              <div className="avatar"></div>
-            </DynamicAvatar>
-    
+    return null;
+  }
+
+  function renderCard () {
+    if (cardData && cardData.guild) {
+      var cardIcon = getIconURL(256);
+      console.log('Rendering card ' + cardNumber);
+      return (
+        <Zoom duration = "750">
+          <div className="CardTop">
+            <CardBackground className="Background" bgImage={cardIcon} />
+            <CardAvatar className="Avatar" avatar={cardIcon} />
+            <CardJoin className="CardButton">
+              <div className="CardButtonText">
+                <FontAwesomeIcon icon={faSignInAlt} />&nbsp;&nbsp;Join Now
+              </div>
+            </CardJoin>
             <div className="info">
-              <h3>{this.props.title}</h3>
+              <h3>{cardData.guild.name}</h3>
             </div>
           </div>
-            <div className="main__content">
-              <div className="upper__card">
-                <div className="info2">
-                  
-                  <div className="pill">
-                    <i className="fa fa-circle online" aria-hidden="true"></i>
-                    {this.props.online} online
-                  </div>
-                  <div className="pill">
-                    <i className="fa fa-circle" aria-hidden="true"></i>
-                    {this.props.total} members
-                  </div> 
-                </div>
+          <div className="main__content">
+            <div className="upper__card">
+              <div className="info2">
+                <div className="pill">
+                  <i className="fa fa-circle online" aria-hidden="true" />
+                  {cardData.approximate_presence_count} online<div className="spacer"/>
+                </div><div className="spacer"/>
+                <div className="pill">
+                  <i className="fa fa-circle" aria-hidden="true" />
+                  {cardData.approximate_member_count} members<div className="spacer"/>
+                </div><div className="spacer"/>
               </div>
             </div>
           </div>
-        )
+        </Zoom>
+      );
     }
+  }
+
+  // called each time a parent renders this component to a client DOM
+
+  return <div>{renderCard()}</div>;
 }
 
+/*
 ServerCard.defaltProps = {
     bgimage: '',
     avatar: '',
@@ -107,6 +101,6 @@ ServerCard.defaltProps = {
     online: '0',
     total: '0'
   };
-
+*/
 
 export default ServerCard;

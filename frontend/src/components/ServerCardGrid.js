@@ -1,47 +1,78 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ServerCard from './ServerCard';
-import './ServerCardGrid.css';
- 
-// grid helpers in react
-const GridTrigger = 499;
-const Responsive  = () => { 
-  if (window.innerWidth > GridTrigger) {
-    return {width: window.innerWidth, viewmobile:false};
-  } else {
-    return {width: window.innerWidth, viewmobile:true};
-  }
-}
+import Fire from '../config/Fire';
+import LoadingIndicator from './Loading';
+import '../styles/ServerCardGrid.css';
 
-class ServerCardGrid extends Component {
-    constructor(props) {
-        super(props);
-        this.state = Responsive(); 
+const Centered = styled.div`
+  width: ${window.innerWidth};
+  margin: 0 auto;
+  padding-top: 5vw;
+`;
+
+function ServerCardGrid (props) {
+  const [serverList, setServerList] = useState([]);
+  const [hasPulledServers, setPulled] = useState(false);
+  const [serverCount, setServerCount] = useState(0);
+
+  useEffect(() => {
+    console.log('useEffect() called');
+    setPulled(false);
+    Fire.database()
+      .ref('servers')
+      .on('value', snapshot => {
+        const snapVal = snapshot.val();
+        setServerCount(Object.keys(snapVal).length);
+        setServerList(snapVal);
+        setPulled(true);
+      });
+  }, [serverCount]);
+  // ^^ passing the count makes sure React only calls
+  // this when the count changes
+
+  function renderLoadingIndicator () {
+    if (!hasPulledServers) {
+      return (
+        <Centered>
+          <LoadingIndicator isLoading>Loading</LoadingIndicator>
+        </Centered>
+      );
+    } else {
+      return null;
     }
-    
-    componentDidMount() {
-        this.updateWidthState(true);
-      }
-    
-    updateWidthState(AndView) {
-        const Width = Responsive(); 
-        this.state.width = Width[0];
-        if (AndView) this.state.viewmobile = Width[1];
+  }
+
+  function renderGrid (page) {
+    var paginateServers = [];
+    if (serverList && serverCount > 0) {
+      var count = 0;
+      Object.keys(serverList).map((servers) => {
+        if (servers && serverList[servers] && serverList[servers]['guild']) {
+          count++; // we use the count to control animation delay
+          if (count <= 20) {
+            paginateServers.push(<li key={count}>
+              <ServerCard
+                cardNumber={count}
+                key={count}
+                code={serverList[servers]['code']}
+                data={serverList[servers]}
+              /></li>);
+          }
+        }
+      });
+      return (<ul>{ paginateServers }</ul>);
     }
-    
-    // TODO:  Pull these Cards from Firebase (this is just mockup for now)
-    render() { 
-        return (
-            <div>
-                <div className="servergrid">
-                <ul>
-                    <li><ServerCard online='53' total='159' avatar='https://i0.wp.com/digiday.com/wp-content/uploads/2017/08/Reddit-Logo.jpg?w=1440' bgimage='https://i0.wp.com/digiday.com/wp-content/uploads/2017/08/Reddit-Logo.jpg?w=1440' title='Reddit: The Official Discord Server' /></li>
-                    <li><ServerCard online='53' total='159' avatar='https://pmcvariety.files.wordpress.com/2018/05/discord-logo.jpg?w=1000&h=563&crop=1' bgimage='https://pmcvariety.files.wordpress.com/2018/05/discord-logo.jpg?w=1000&h=563&crop=1' title='Yes, Discord Has A Discord.' /></li>
-                </ul>
-                </div>
-            </div>
-        )
-    }
+  }
+
+  return (
+    <div>
+      { renderLoadingIndicator() }
+      <div className="servergrid">
+        { renderGrid() }
+      </div>
+    </div>
+  );
 }
 
 export default ServerCardGrid;

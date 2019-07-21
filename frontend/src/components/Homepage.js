@@ -1,21 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import '../styles/Homepage.css';
-import Header from './Header';
+import Navbar from './Navbar';
 import ServerCardGrid from './ServerCardGrid';
+import _ from 'lodash';
 
-// main class
-class Homepage extends Component  {
-  constructor(props) {
-    super(props);
-  }
+console.log(_.join(['Another', 'module', 'loaded!'], ' '));
 
-  render() {
-    return(
+// homepage
+function Homepage () {
+  return (
     <div className="wrapper">
-      <Header /> 
+      <Navbar />
       <ServerCardGrid />
     </div>
-  );}
+  );
 }
-  
-export default Homepage 
+
+export default Homepage;
