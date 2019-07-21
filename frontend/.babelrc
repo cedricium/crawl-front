@@ -1,5 +1,6 @@
 {
     "presets": [
+      
    [ "@babel/preset-env", {
      "modules": false,
      "targets": {
@@ -13,8 +14,11 @@
       "ie 11"
     ]
      }
-   } ],
+   } ], ["minify"],
+   
    "@babel/preset-react"
     ],
-    "plugins": [ "@babel/plugin-proposal-class-properties" ]
-  }
+    "plugins": [ "@babel/plugin-proposal-class-properties", "babel-plugin-styled-components" ]
+ 
+
+}

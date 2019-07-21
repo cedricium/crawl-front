@@ -1,0 +1,18 @@
+{  "parser": "babel-eslint", 
+    "extends": ["react","plugin:react/recommended"],
+    "rules": {
+        // override default options
+        "react/jsx-uses-react": "error",   
+        "react/jsx-uses-vars": "error", 
+        "indent": ["error", 2]
+    },
+    "plugins": ["react"],
+    "env": {   
+        "browser": true,   
+        "node": true  },  
+        "settings": {    
+            "react": {      
+                "version": "detect"    
+                }  
+                }
+            }
