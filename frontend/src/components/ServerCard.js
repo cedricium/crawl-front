@@ -7,11 +7,6 @@ import Zoom from 'react-reveal/Zoom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
-const Animation = styled.div.attrs(props => ({
-  style: { animationDelay: `${props.delay}s` } }))`
-  opacity: 0;animation:fadeIn ease-in 1 forwards;animation-fill-mode:
-  forwards;animation-duration:1s;`;
-
 const CardBackground = styled.div.attrs(props => ({
   style: { background: 'url(' + `${props.bgImage}` + ')' }
 }))``;
@@ -20,10 +15,11 @@ const CardAvatar = styled.div.attrs(props => ({
   style: { background: 'url(' + `${props.avatar}` + ')' }
 }))``;
 
-const CardJoin = styled.div`    float: right;
-margin-top: 4em;
-margin-right: 1em;
-position: relative;`;
+const CardJoin = styled.div`
+  float: right;
+  margin-top: 4em;
+  margin-right: 1em;
+  position: relative;`;
 
 
 function ServerCard (props) {
@@ -57,28 +53,28 @@ function ServerCard (props) {
       return (
         <Zoom duration = "750">
           <div className="CardTop">
-            <CardBackground className="Background" bgImage={cardIcon} />
-            <CardAvatar className="Avatar" avatar={cardIcon} />
-            <CardJoin className="CardButton">
-              <div className="CardButtonText">
-                <FontAwesomeIcon icon={faSignInAlt} />&nbsp;&nbsp;Join Now
+            <CardBackground className="Background"  bgImage={cardIcon} />
+            <CardAvatar     className="Avatar"      avatar={cardIcon} />
+            <CardJoin       className="CardButton">
+              <div          className="CardButtonText">
+                <FontAwesomeIcon icon={faSignInAlt} /> &nbsp;&nbsp;Join Now
               </div>
             </CardJoin>
             <div className="info">
-              <h3>{cardData['guild_name']}</h3>
+              <h3>{cardData['guild_name']}</h3>  
             </div>
           </div>
-          <div className="main__content">
-            <div className="upper__card">
-              <div className="info2">
-                <div className="pill">
-                  <i className="fa fa-circle online" aria-hidden="true" />
-                  {cardData['approximate_presence_count']} online<div className="spacer"/>
-                </div><div className="spacer"/>
-                <div className="pill">
-                  <i className="fa fa-circle" aria-hidden="true" />
-                  {cardData['approximate_member_count']} members<div className="spacer"/>
-                </div><div className="spacer"/>
+          <div                className="main__content">
+            <div              className="upper__card">
+              <div            className="info2">
+                <div          className="pill">
+                  <i          className="fa fa-circle online" aria-hidden="true" />
+                  { cardData ['approximate_presence_count'] } online <div className="spacer"/>
+                </div><div    className="spacer"/>
+                <div          className="pill">
+                  <i          className="fa fa-circle" aria-hidden="true" />
+                  { cardData ['approximate_member_count'] } members <div className="spacer"/>
+                </div><div    className="spacer"/>
               </div>
             </div>
           </div>
