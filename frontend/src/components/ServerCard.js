@@ -13,11 +13,11 @@ const Animation = styled.div.attrs(props => ({
   forwards;animation-duration:1s;`;
 
 const CardBackground = styled.div.attrs(props => ({
-  style: { background: 'url(' + `${props.bgImage}%` + ')' }
+  style: { background: 'url(' + `${props.bgImage}` + ')' }
 }))``;
 
 const CardAvatar = styled.div.attrs(props => ({
-  style: { background: 'url(' + `${props.avatar}%` + ')' }
+  style: { background: 'url(' + `${props.avatar}` + ')' }
 }))``;
 
 const CardJoin = styled.div`    float: right;
@@ -32,9 +32,9 @@ function ServerCard (props) {
   const [inviteCode, setInviteCode] = useState(props.code);
 
   function getIconURL (size = 128) {
-    if (cardData && cardData.guild) {
-      var guildID = cardData.guild.id;
-      var iconID = cardData.guild.icon;
+    if (cardData) {
+      var guildID = cardData['guild_id'];
+      var iconID = cardData['guild_icon'];
       if (iconID === 'undefined.png') {
         return null;
       }
@@ -51,7 +51,7 @@ function ServerCard (props) {
   }
 
   function renderCard () {
-    if (cardData && cardData.guild) {
+    if (cardData) {
       var cardIcon = getIconURL(256);
       console.log('Rendering card ' + cardNumber);
       return (
@@ -65,7 +65,7 @@ function ServerCard (props) {
               </div>
             </CardJoin>
             <div className="info">
-              <h3>{cardData.guild.name}</h3>
+              <h3>{cardData['guild_name']}</h3>
             </div>
           </div>
           <div className="main__content">
@@ -73,11 +73,11 @@ function ServerCard (props) {
               <div className="info2">
                 <div className="pill">
                   <i className="fa fa-circle online" aria-hidden="true" />
-                  {cardData.approximate_presence_count} online<div className="spacer"/>
+                  {cardData['approximate_presence_count']} online<div className="spacer"/>
                 </div><div className="spacer"/>
                 <div className="pill">
                   <i className="fa fa-circle" aria-hidden="true" />
-                  {cardData.approximate_member_count} members<div className="spacer"/>
+                  {cardData['approximate_member_count']} members<div className="spacer"/>
                 </div><div className="spacer"/>
               </div>
             </div>
