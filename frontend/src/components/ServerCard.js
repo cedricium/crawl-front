@@ -27,6 +27,12 @@ function ServerCard (props) {
   const [cardNumber, setCardNumber] = useState(props.cardNumber);
   const [inviteCode, setInviteCode] = useState(props.code);
 
+  function getJoinURL () {
+    return (
+      'https://discord.gg/' + inviteCode
+    );
+  }
+
   function getIconURL (size = 128) {
     if (cardData) {
       var guildID = cardData['guild_id'];
@@ -51,30 +57,32 @@ function ServerCard (props) {
       var cardIcon = getIconURL(256);
       console.log('Rendering card ' + cardNumber);
       return (
-        <Zoom duration = "750">
+        <Zoom duration = {300}>
           <div className="CardTop">
-            <CardBackground className="Background"  bgImage={cardIcon} />
-            <CardAvatar     className="Avatar"      avatar={cardIcon} />
-            <CardJoin       className="CardButton">
-              <div          className="CardButtonText">
-                <FontAwesomeIcon icon={faSignInAlt} /> &nbsp;&nbsp;Join Now
-              </div>
-            </CardJoin>
+            <CardBackground className="Background" bgImage={cardIcon} />
+            <CardAvatar className="Avatar" avatar={cardIcon} />
+            <a href={getJoinURL()}>
+              <CardJoin className="CardButton">
+                <div className="CardButtonText">
+                  <FontAwesomeIcon icon={faSignInAlt} /> &nbsp;&nbsp;Join Now
+                </div>
+              </CardJoin>
+            </a>
             <div className="info">
-              <h3>{cardData['guild_name']}</h3>  
+              <h3>{cardData['guild_name']}</h3>
             </div>
           </div>
-          <div                className="main__content">
-            <div              className="upper__card">
-              <div            className="info2">
-                <div          className="pill">
-                  <i          className="fa fa-circle online" aria-hidden="true" />
+          <div className="main__content">
+            <div className="upper__card">
+              <div className="info2">
+                <div className="pill">
+                  <i className="fa fa-circle online" aria-hidden="true" />
                   { cardData ['approximate_presence_count'] } online <div className="spacer"/>
-                </div><div    className="spacer"/>
-                <div          className="pill">
-                  <i          className="fa fa-circle" aria-hidden="true" />
+                </div><div className="spacer"/>
+                <div className="pill">
+                  <i className="fa fa-circle" aria-hidden="true" />
                   { cardData ['approximate_member_count'] } members <div className="spacer"/>
-                </div><div    className="spacer"/>
+                </div><div className="spacer"/>
               </div>
             </div>
           </div>
@@ -82,21 +90,7 @@ function ServerCard (props) {
       );
     }
   }
-
-  // called each time a parent renders this component to a client DOM
-
   return <div>{renderCard()}</div>;
 }
-
-/*
-ServerCard.defaltProps = {
-    bgimage: '',
-    avatar: '',
-    title: 'default title',
-    subtitle: 'default subtitle',
-    online: '0',
-    total: '0'
-  };
-*/
 
 export default ServerCard;

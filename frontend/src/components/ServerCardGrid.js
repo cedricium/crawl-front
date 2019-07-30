@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ServerCard from './ServerCard';
@@ -12,43 +14,31 @@ const Centered = styled.div `
 `;
 
 
-const ServerCardGrid = ( ) => {
+const ServerCardGrid = () => {
+  const [serverList, setServerList] = useState([]);
+  const [hasPulledServers, setPulled] = useState(false);
+  const [serverCount, setServerCount] = useState(0);
+  const [newServers, setNewServers] = useState(false);
 
-  const [ serverList,       setServerList   ] = useState(   [ ]  );
-  const [ hasPulledServers, setPulled       ] = useState(  false );
-  const [ serverCount,      setServerCount  ] = useState(    0   );  
-  const [ newServers,       setNewServers   ] = useState(  false );
-  
-  useEffect( ( ) => {
-
-    if ( !hasPulledServers ) {
-
-      ( async ( ) => {
-
-        let res = await fetch ("http://localhost:8000/api/Discord_Server");
-
-        let response = await res.json ( );
-
-        // update states
-        setServerList (response);
-        console.log   (response)
-
-        let ct=0, last_id = 0;
-
-        let dorah = response.map ( function( server ) {
+  useEffect(() => {
+    if (!hasPulledServers) {
+      (async () => {
+        let res = await fetch("http://localhost:8000/api/Discord_Server");
+        let response = await res.json();
+        setServerList(response);
+        var ct = 0;
+        var lastID = 0;
+        var dorah = response.map(function (server) {
           ct += 1;
-          last_id = server.id;
-          console.log('last ID: ' + server.id);
+          lastID = server.id;
         });
-
         setServerCount(ct);
         setPulled(true);
-
-        console.log('Count: ' + ct)
+        console.log('Last ID: ' + lastID);
       })();
     }
   }, []);
-    
+
 
   function renderLoadingIndicator () {
     if (!hasPulledServers) {
@@ -68,11 +58,10 @@ const ServerCardGrid = ( ) => {
     if (serverList && serverCount > 0) {
       var count = 0;
       serverList.map((server) => {
-        console.log('rendering server ' + server['invite_link']);
         if (server) {
           count++; // we use the count to control animation delay
           if (count <= 20000) {
-            paginateServers.push(<li key={count}>
+            paginateServers.unshift(<li key={count}>
               <ServerCard
                 cardNumber={count}
                 key={count}
@@ -96,9 +85,8 @@ const ServerCardGrid = ( ) => {
             </li>
           </ul>
           <ul>
-            { paginateServers.reverse() }
+            { paginateServers }
           </ul>
-
         </div>
       );
     }

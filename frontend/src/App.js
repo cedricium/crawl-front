@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Homepage from './components/Homepage';
 
 class App extends Component {
-  render() {
+  render () {
     return (
-        <div>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Homepage} />
-        </Switch>
-      </Router>
+      <div>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Homepage} />
+          </Switch>
+        </Router>
       </div>
     );
   }
 }
 
-export default App
+export default App;
