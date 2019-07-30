@@ -1,36 +1,64 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import ServerCard from './ServerCard';
 import LoadingIndicator from './Loading';
 import '../styles/ServerCardGrid.css';
-
+import useInterval from './useInterval';
 
 const Centered = styled.div `
-    width:        ${window.innerWidth};
-    margin:       0 auto;
-    padding-top:  5vw;
+  display: inline-block;
+  text-align: center;
+  margin-left: 0%;
+  width: 100%;
 `;
 
 
 const ServerCardGrid = () => {
-  const [serverList, setServerList] = useState([]);
-  const [hasPulledServers, setPulled] = useState(false);
-  const [serverCount, setServerCount] = useState(0);
-  const [lastReceivedID, setLastReceivedID] = useState(0);
-  const [isFetching, setIsFetching] = useState(false);
+  let [serverList, setServerList] = useState([]);
+  let [hasPulledServers, setPulled] = useState(false);
+  let [serverCount, setServerCount] = useState(0);
+  let [lastReceivedID, setLastReceivedID] = useState(0);
 
-  function appendServerList (data) {
-    setServerList(serverList + data);
+  function countObjects (obj) {
+    return Object.keys(obj).length;
   }
 
+  useInterval(() => {
+    try {
+      (async () => {
+        let res = await fetch("http://localhost:8000/api/Discord_Server/?last_received=" + (lastReceivedID + 1));
+        let response = await res.json();
+        var lastID = 0;
+        let aList = [];
+
+        var dorah = response.map(function (server) {
+          lastID = server.id;
+        });
+
+        if (lastID > lastReceivedID) {
+          var aList2 = serverList;
+
+          var dorah2 = response.map(function (server) {
+            aList2.push(server);
+          });
+
+          setLastReceivedID(lastID);
+          setServerList(aList2);
+          let newCount = countObjects(response);
+          setServerCount(serverCount + newCount);
+        }
+      })();
+    } catch (e) {
+      console.log(e);
+    }
+  }, 10000);
+
   useEffect(() => {
-    console.log('useEffect called');
     if (serverCount === 0) { // lets only fetch the whole list once
       try {
         (async () => {
-          console.log('hasPulledServers: ' + hasPulledServers + ' Server count: ' + serverCount);
           let res = await fetch("http://localhost:8000/api/Discord_Server");
           let response = await res.json();
           setServerList(response);
@@ -40,40 +68,14 @@ const ServerCardGrid = () => {
             ct += 1;
             lastID = server.id;
           });
+          let ctobj = Object.keys(response).length;
+          console.log('ctobj: ' + ctobj);
+
           setServerCount(ct);
           setPulled(true);
           setLastReceivedID(lastID);
           console.log('Last ID: ' + lastID);
         })();
-      } catch (e) {
-        console.log(e);
-      }
-    } else {
-      try {
-        if (!isFetching) {
-          console.log('FETCHING');
-          setInterval(async () => {
-            setIsFetching(true);
-            console.log('10 seconds has passed, last received ID: ' + lastReceivedID);
-            let res = await fetch("http://localhost:8000/api/Discord_Server/?last_received=" + lastReceivedID);
-            let response = await res.json();
-            var ct = 0;
-            var lastID = 0;
-            var dorah = response.map(function (server) {
-              lastID = server.id;
-            });
-
-            if (lastID > lastReceivedID) {
-              console.log('NEW SERVERS DETECTED');
-              var aList = serverList;
-              aList.unshift(response);
-              setLastReceivedID(lastID);
-              console.log('Last ID: ' + lastID);
-              console.log('Setting last received ID to ' + lastID);
-              //serverList.unshift(response);
-            }
-          }, 10000);
-        }
       } catch (e) {
         console.log(e);
       }
@@ -99,8 +101,8 @@ const ServerCardGrid = () => {
     if (serverList && serverCount > 0) {
       var count = 0;
       serverList.map((server) => {
-        if (server) {
-          count++; // we use the count to control animation delay
+        count++;
+        if (server && count > (serverCount - 102)) {
           if (count <= 20000) {
             paginateServers.unshift(<li key={count}>
               <ServerCard
@@ -115,17 +117,6 @@ const ServerCardGrid = () => {
       return (
         <div>
           <ul>
-            <li>
-              This is a new server
-            </li>
-            <li>
-              This is a new server
-            </li>
-            <li>
-              This is a new server
-            </li>
-          </ul>
-          <ul>
             { paginateServers }
           </ul>
         </div>
@@ -137,6 +128,7 @@ const ServerCardGrid = () => {
   return (
     <div>
       { renderLoadingIndicator() }
+      <Centered><h2>Showing: 100 newest servers (total: {serverCount})</h2></Centered>
       <div className="servergrid">
         { renderGrid() }
       </div>
