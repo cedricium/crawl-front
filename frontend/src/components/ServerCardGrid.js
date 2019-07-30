@@ -18,26 +18,67 @@ const ServerCardGrid = () => {
   const [serverList, setServerList] = useState([]);
   const [hasPulledServers, setPulled] = useState(false);
   const [serverCount, setServerCount] = useState(0);
-  const [newServers, setNewServers] = useState(false);
+  const [lastReceivedID, setLastReceivedID] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
+
+  function appendServerList (data) {
+    setServerList(serverList + data);
+  }
 
   useEffect(() => {
-    if (!hasPulledServers) {
-      (async () => {
-        let res = await fetch("http://localhost:8000/api/Discord_Server");
-        let response = await res.json();
-        setServerList(response);
-        var ct = 0;
-        var lastID = 0;
-        var dorah = response.map(function (server) {
-          ct += 1;
-          lastID = server.id;
-        });
-        setServerCount(ct);
-        setPulled(true);
-        console.log('Last ID: ' + lastID);
-      })();
+    console.log('useEffect called');
+    if (serverCount === 0) { // lets only fetch the whole list once
+      try {
+        (async () => {
+          console.log('hasPulledServers: ' + hasPulledServers + ' Server count: ' + serverCount);
+          let res = await fetch("http://localhost:8000/api/Discord_Server");
+          let response = await res.json();
+          setServerList(response);
+          var ct = 0;
+          var lastID = 0;
+          var dorah = response.map(function (server) {
+            ct += 1;
+            lastID = server.id;
+          });
+          setServerCount(ct);
+          setPulled(true);
+          setLastReceivedID(lastID);
+          console.log('Last ID: ' + lastID);
+        })();
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        if (!isFetching) {
+          console.log('FETCHING');
+          setInterval(async () => {
+            setIsFetching(true);
+            console.log('10 seconds has passed, last received ID: ' + lastReceivedID);
+            let res = await fetch("http://localhost:8000/api/Discord_Server/?last_received=" + lastReceivedID);
+            let response = await res.json();
+            var ct = 0;
+            var lastID = 0;
+            var dorah = response.map(function (server) {
+              lastID = server.id;
+            });
+
+            if (lastID > lastReceivedID) {
+              console.log('NEW SERVERS DETECTED');
+              var aList = serverList;
+              aList.unshift(response);
+              setLastReceivedID(lastID);
+              console.log('Last ID: ' + lastID);
+              console.log('Setting last received ID to ' + lastID);
+              //serverList.unshift(response);
+            }
+          }, 10000);
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }, []);
+  }, [lastReceivedID]);
 
 
   function renderLoadingIndicator () {
