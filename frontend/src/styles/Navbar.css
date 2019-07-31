@@ -12,6 +12,10 @@
   height: 40px;
 }
 
+.active {
+  background-color: #0099FF;
+}
+
 .logo-link {
   color: black;
   text-decoration: none;
