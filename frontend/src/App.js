@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Homepage from './components/Homepage';
+import Navbar from './components/Navbar';
+import { Route, HashRouter } from "react-router-dom";
+import Home from './components/Homepage';
+import All from './components/All';
+import './styles/Globals.css';
 
 class App extends Component {
   render () {
     return (
-      <div>
-        <Router>
-          <Switch>
-            <Route exact path="/" component={Homepage} />
-          </Switch>
-        </Router>
-      </div>
+      <HashRouter>
+        <div>
+          <Navbar />
+          <div className="content">
+            <Route exact path="/" component={Home}/>
+            <Route path="/all" component={All}/>
+          </div>
+        </div>
+      </HashRouter>
     );
   }
 }
