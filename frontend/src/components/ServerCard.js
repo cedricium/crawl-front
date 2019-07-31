@@ -11,10 +11,6 @@ const CardBackground = styled.div.attrs(props => ({
   style: { background: 'url(' + `${props.bgImage}` + ')' }
 }))``;
 
-const CardAvatar = styled.div.attrs(props => ({
-  style: { background: 'url(' + `${props.avatar}` + ')' }
-}))``;
-
 const CardJoin = styled.div`
   float: right;
   margin-top: 4em;
@@ -54,20 +50,14 @@ function ServerCard (props) {
 
   function renderCard () {
     if (cardData) {
-      var cardIcon = getIconURL(256);
-      console.log('Rendering card ' + cardNumber);
+      var cardIcon = getIconURL(128);
+      //console.log('Rendering card ' + cardNumber);
       return (
         <Zoom duration = {300}>
           <div className="CardTop">
             <CardBackground className="Background" bgImage={cardIcon} />
-            <CardAvatar className="Avatar" avatar={cardIcon} />
-            <a href={getJoinURL()}>
-              <CardJoin className="CardButton">
-                <div className="CardButtonText">
-                  <FontAwesomeIcon icon={faSignInAlt} /> &nbsp;&nbsp;Join Now
-                </div>
-              </CardJoin>
-            </a>
+            <div className="Avatar" style={{ background: 'url(' + cardIcon + ')', backgroundSize: '100%' }} />
+
             <div className="info">
               <h3>{cardData['guild_name']}</h3>
             </div>
